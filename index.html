@@ -9,6 +9,7 @@ body{margin:0;overscroll-behavior:none;background:#f6f1e6;color:#2c2a26;font-fam
 #viewport{position:fixed;inset:0;overflow:hidden}
 #stage{position:absolute;inset:0;transition:transform .32s cubic-bezier(.33,.66,.4,1)}
 .pg{position:absolute;left:0;right:0;top:0;height:100%;padding:3.1rem 22px 4.4rem;box-sizing:border-box;overflow:hidden;background:#f6f1e6}
+.byline{text-align:center;font-size:.9rem;color:#8a7a5c;margin:-0.5rem 0 1.4rem;letter-spacing:.25em;text-indent:0}
 .fol{position:absolute;left:0;right:0;bottom:2.9rem;text-align:center;font-size:.78rem;color:#9a8a6c;letter-spacing:.12em}
 #prober{position:absolute;left:-9999px;top:0;visibility:hidden;width:100px}
 h2.chap{font-size:1.32rem;letter-spacing:.12em;text-align:center;margin:.2rem 0 1.3rem;font-weight:700}
@@ -70,9 +71,8 @@ figure img{max-width:100%;max-height:52vh;max-height:52dvh;border-radius:5px;box
   <div class="sub">何祥荣文集 · 试读本</div>
   <div class="rule"></div>
   <h1>赤子</h1>
-  <div class="sub" style="margin-top:1.2rem">从西菜园出发</div>
-  <div class="sub" style="margin-top:.6rem;font-size:.95rem;opacity:.8">第一辑 · 岁月留痕</div>
-  <div class="vol">何祥荣　著<br>家属审阅版 · 二〇二六年六月</div>
+  <div class="sub" style="margin-top:1.2rem;font-size:.95rem;opacity:.8">第一辑 · 岁月留痕</div>
+  <div class="vol">何祥荣　著</div>
   <div class="hint">轻 触 任 意 处 开 始 阅 读</div>
 </div>
 <div id="sheet" style="display:none">
@@ -81,7 +81,8 @@ figure img{max-width:100%;max-height:52vh;max-height:52dvh;border-radius:5px;box
 <p>敬请作者重点复核：一、《接漏》"此后三年"句为发表版所增，拆迁年份由一九九七年改为一九七七年；二、《一条半人命》"谭政霖"是否应为"谭政林"；三、《小猛子》"木螺钉厂"厂名、新注六缺注；四、老屋系列"之四""之五"及美国游记残篇（轻轨二、三，大雁，游三岛）是否仍有存稿。</p>
 <p>审阅意见请直接批注或转告整理人。审定后即据以排印全书。</p>
 <p class="date">二〇二六年六月 · 家属整理</p>
-<h2 class="chap">序　古稀叟，赤子心</h2>
+<h2 class="chap">序一　古稀叟，赤子心</h2>
+<p class="byline">女儿 盒饭</p>
 <p>四五年前，我给自己下过一个任务：把爸爸这么多年来写的文章整理结集，作为他七十五岁的生日礼物。然而资料整理了大半，没能一气呵成，后来就不了了之了。如今爸爸马上七十九岁了，我又把这个念头拾了起来。有了 AI 的帮助，半个晚上居然就搞了个七七八八，有了一版可以看的样子。翻出了九年前写的贺寿文，以为序。</p>
 <p>——以下为二〇一七年旧作——</p>
 <p>前两天，我的网红校友发了一篇文章《我的父亲老何》，一时感动无数人。校友们纷纷转载，我心里却暗暗着急：这可是几个星期前我就给自己布置的命题作文的标题啊。人家已经出了一篇点击量八万多的红文，严重拖延症的我还没下笔。无论如何，今天一定要交作业了。仅以此文，庆贺老爸七十大寿。</p>
@@ -104,7 +105,7 @@ figure img{max-width:100%;max-height:52vh;max-height:52dvh;border-radius:5px;box
 <figure><img src="img/xu_6.jpg" width="640" height="480" style="aspect-ratio:640/480"></figure>
 <p>有时候妈妈笑着跟爸爸说，研究股票那么认真，也没看赚几个钱。其实，大部分的爱好，爸爸都没玩出个什么很高水准。可是那有什么关系呢？大部分人都是普普通通，哪有那么多的成就。玩的过程就是人生。做人嘛，最要紧就是开心。玩得开心，自得其乐就好了。更何况，这乐观爱玩的天性、坚韧认真的态度，通过 DNA，也通过润物细无声的日常熏陶传给了我们，这才是我们最宝贵的财富。</p>
 <p>老爸，生日快乐！祝您跟妈妈一起，活到老，学到老，玩到老，心态永年轻！</p>
-<p>（本文写于二〇一七年十一月，老爸七十岁生日前夕，原载微信公众号"玩伴你成长"，作者小名盒饭）</p>
+<p>（本文写于二〇一七年十一月，老爸七十岁生日前夕，原载微信公众号"玩伴你成长"）</p>
 
 <div class="partpage"><span>一　老屋·故乡</span></div>
 <h2 class="chap">老屋·接漏</h2>
@@ -1605,6 +1606,10 @@ function contentRem(pg){
 }
 function buildTOC(){
   var toc=q('toclist');toc.innerHTML='';
+  var cov=document.createElement('div');cov.className='ti';
+  var clink=document.createElement('a');clink.href='#';clink.textContent='⌂ 返回封面';
+  clink.onclick=function(e){e.preventDefault();showCover();};
+  cov.appendChild(clink);toc.appendChild(cov);
   tocEntries.forEach(function(en){
     if(en.type==='part'){
       var d=document.createElement('div');d.className='tp';d.textContent=en.title;
@@ -1635,6 +1640,7 @@ function updateUI(){
 function toggleChrome(){q('topbar').classList.toggle('hidden');q('bottombar').classList.toggle('hidden');}
 function openTOC(){q('tocpanel').classList.add('open');q('tocmask').classList.add('open');}
 function closeTOC(){q('tocpanel').classList.remove('open');q('tocmask').classList.remove('open');}
+function showCover(){closeTOC();var c=q('cover');c.style.display='flex';requestAnimationFrame(function(){c.style.opacity='1';});var h=c.querySelector('.hint');if(h&&pages.length)h.textContent='轻 触 任 意 处 开 始 阅 读';}
 var fsIdx=1,fsList=[15,17,19];
 function setFs(){document.documentElement.style.fontSize=fsList[fsIdx]+'px';setTimeout(paginateKeep,60);}
 function paginateKeep(){
