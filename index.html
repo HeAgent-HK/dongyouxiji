@@ -69,8 +69,6 @@ figure img{max-width:100%;max-height:52vh;max-height:52dvh;border-radius:5px;box
 <div id="tocmask" onclick="closeTOC()"></div>
 <div id="tocpanel"><h3>目 录</h3><div id="toclist"></div></div>
 <div id="cover" onclick="startRead()">
-  <img src="img/xu_1.jpg" alt="" id="coverImg">
-  <div class="rule"></div>
   <h1>赤子</h1>
   <div class="sub" style="margin-top:1.4rem;font-size:.98rem;opacity:.88">第一辑 · 广济时光</div>
   <div class="vol">何祥荣　著</div>
@@ -1304,6 +1302,9 @@ function contentRem(pg){
         var trimChars=linesOver*cpl+2;
         if(trimChars>len-1)trimChars=len-1;
         var keep=len-trimChars;
+        var firstLine=cpl-2;
+        if(keep>firstLine){var bd=firstLine+Math.floor((keep-firstLine)/cpl)*cpl;if(bd>=1)keep=bd;else keep=Math.min(len-1,firstLine);}
+        if(keep<1)keep=1;
         var tail=node.textContent.substring(keep);
         node.textContent=node.textContent.substring(0,keep);
         queue.unshift(mkTextLike(el,tail));
