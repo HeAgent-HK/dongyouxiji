@@ -6,9 +6,9 @@
 <title>东游西记 · 第一辑 岁月留痕</title>
 <style>html{font-size:17px;-webkit-text-size-adjust:100%}
 body{margin:0;background:#f6f1e6;color:#2c2a26;font-family:"Noto Serif SC","Source Han Serif SC","Songti SC",STSong,"SimSun",serif}
-#viewport{position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
-#stage{position:relative}
-.pg{position:relative;height:100vh;height:100dvh;padding:3.1rem 22px 4.4rem;box-sizing:border-box;overflow:hidden;scroll-snap-align:start;scroll-snap-stop:always;background:#f6f1e6}
+#viewport{position:fixed;inset:0;overflow:hidden}
+#stage{position:absolute;inset:0;transition:transform .32s cubic-bezier(.33,.66,.4,1)}
+.pg{position:absolute;left:0;right:0;top:0;height:100%;padding:3.1rem 22px 4.4rem;box-sizing:border-box;overflow:hidden;background:#f6f1e6}
 #prober{position:absolute;left:-9999px;top:0;visibility:hidden;width:100px}
 h2.chap{font-size:1.32rem;letter-spacing:.12em;text-align:center;margin:.2rem 0 1.3rem;font-weight:700}
 h2.chap::after{content:"";display:block;width:3.2rem;height:2px;background:#bfa05a;margin:.7rem auto 0}
@@ -1536,23 +1536,9 @@ function paginate(){
       continue;
     }
     if(cls==='verse'){
-      var lines=el.innerHTML.split(/<br\s*\/?>/i);
-      var curv=null;
-      for(var vi=0;vi<lines.length;vi++){
-        var cand=el.cloneNode(false);
-        cand.innerHTML=(curv?curv.innerHTML+'<br>':'')+lines[vi];
-        pg.appendChild(cand);
-        if(ov(pg)>1){
-          pg.removeChild(cand);
-          if(curv===null){
-            pg.appendChild(cand);curv=cand;
-          }else{
-            flush();
-            curv=el.cloneNode(false);curv.innerHTML=lines[vi];
-            pg.appendChild(curv);
-          }
-        }else{curv=cand;}
-      }
+      var node=el.cloneNode(true);
+      pg.appendChild(node);
+      if(ov(pg)>1){pg.removeChild(node);flush();pg.appendChild(node);}
       continue;
     }
     var node=el.cloneNode(true);
@@ -1585,6 +1571,7 @@ function paginate(){
     fol.textContent='· '+(fi+1)+' ·';
     pages[fi].appendChild(fol);
   }
+  for(var pi=0;pi<pages.length;pi++){pages[pi].style.top=(pi*100)+'%';}
   buildTOC();
   var qp=parseInt(new URLSearchParams(location.search).get('p')||'0');
   go(isNaN(qp)?0:qp,true);
@@ -1603,10 +1590,10 @@ function buildTOC(){
     }
   });
 }
-function pageTop(p){return pages[p]?pages[p].offsetTop:0;}
 function go(p,instant){
   cur=Math.max(0,Math.min(p,pages.length-1));
-  viewport.scrollTo({top:pageTop(cur),behavior:instant?'auto':'smooth'});
+  if(instant)stage.style.transition='none';else stage.style.transition='';
+  stage.style.transform='translateY('+(-cur*100)+'%)';
   updateUI();
 }
 function next(){go(cur+1);}
@@ -1617,19 +1604,6 @@ function updateUI(){
   var t='东游西记 · 岁月留痕';
   for(var k=0;k<chaps.length;k++){if(chaps[k].page<=cur)t=chaps[k].title;else break;}
   q('curtitle').textContent=t;
-}
-var scrollTick=false;
-function onScroll(){
-  if(scrollTick)return;scrollTick=true;
-  requestAnimationFrame(function(){
-    scrollTick=false;
-    if(!pages.length)return;
-    var st=viewport.scrollTop;
-    var h=pages.length>1?(pageTop(1)-pageTop(0))||1:1;
-    var idx=Math.round(st/h);
-    idx=Math.max(0,Math.min(idx,pages.length-1));
-    if(idx!==cur){cur=idx;updateUI();}
-  });
 }
 function toggleChrome(){q('topbar').classList.toggle('hidden');q('bottombar').classList.toggle('hidden');}
 function openTOC(){q('tocpanel').classList.add('open');q('tocmask').classList.add('open');}
@@ -1667,7 +1641,9 @@ document.addEventListener('keydown',function(e){
   if(e.key==='ArrowUp'||e.key==='ArrowLeft'||e.key==='PageUp')prev();
 });
 viewport=q('viewport');
-viewport.addEventListener('scroll',onScroll,{passive:true});
+var __ty0=0,__tx0=0;
+document.addEventListener('touchstart',function(e){__ty0=e.touches[0].clientY;__tx0=e.touches[0].clientX;},{passive:true});
+document.addEventListener('touchend',function(e){var dy=e.changedTouches[0].clientY-__ty0;var dx=e.changedTouches[0].clientX-__tx0;if(Math.abs(dy)>50&&Math.abs(dy)>Math.abs(dx)*1.3){if(dy<0)next();else prev();}},{passive:true});
 stage=q('stage');collect();
 var __qp=new URLSearchParams(location.search).get('p');
 if(__qp!==null)q('cover').style.display='none';
